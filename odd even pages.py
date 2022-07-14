@@ -31,7 +31,7 @@ def sendTelegram(text: str):
         url=f'https://api.telegram.org/bot{token}/sendMessage',
         data={
             'chat_id': chat_id,
-            'text': f'Arabic OCR:\n Files Count: {text} 📕'
+            'text': f'odd even pages:\n Files Count: {text} 📕'
         }
     )
 
