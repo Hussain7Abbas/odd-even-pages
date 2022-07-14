@@ -45,23 +45,25 @@ def startMerging():
     evenPDF = PdfFileReader(ui.even_tx.text())
     for i in range(min(oddPDF.getNumPages(), evenPDF.getNumPages())):
         # Add each page to the writer object
-        ui.progressBar.setValue(ceil(i/oddPDF.getNumPages() * 100))
+        ui.progressBar.setValue(ceil(i/oddPDF.getNumPages() * 100) -1)
         pdf_writer.addPage(oddPDF.getPage(i))
         pdf_writer.addPage(evenPDF.getPage(i))
 
     if not (oddPDF.getNumPages() == evenPDF.getNumPages()):
-        ui.progressBar.setValue(ceil(i/oddPDF.getNumPages() * 100))
+        ui.progressBar.setValue(ceil(i/oddPDF.getNumPages() * 100) -1)
         pdf_writer.addPage(oddPDF.getPage(i))
 
     # Write out the merged PDF
     with open(ui.out_tx.text(), 'wb') as out:
         pdf_writer.write(out)
+        ui.progressBar.setValue(100)
 
     _settings_dt = load(open('settings.json', 'r'))
     _settings_dt['count'] = _settings_dt['count'] + 1
     with open('settings.json', 'w') as file:
         sendTelegram(_settings_dt['count'])
         dump(_settings_dt, file)
+        ui.count_lbl(_settings_dt['count'])
 
 
 # =============================== !SECTION ===============================
@@ -93,7 +95,7 @@ def browsePDF(fileClass):
 def savePDF():
     fileName = ui.out_tx.text()
     if fileName == '':
-        fileName = datetime.today().strftime('%Y-%m-%d_%H-%M-%s')
+        fileName = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
     file, check = QFileDialog.getSaveFileName(
         directory=fileName, filter="PDF File (*.pdf)")
